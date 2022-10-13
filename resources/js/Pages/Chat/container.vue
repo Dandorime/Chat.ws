@@ -11,14 +11,14 @@
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-12" v-bind:class="{ 'animate-pulse': request}">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
                     <div>
-                        <MessageContainer :messages="messages"/>
+                        <MessageContainer :messages="messages" :user_now="user_now" :lastMessage="lastMessage"/>
                         <inputMessage 
                         :room="currentRoom"
-                        v-on:messagesent="getMessage()" 
+                        v-on:messagesent="getLastMessage()"
                         />
                         
                     </div>
@@ -43,14 +43,31 @@ export default {
         ChatRoomSelection
     }, 
     data() {
-        return {
+        return {    
+            request: false,
+            user_now: this.$attrs.user,
             chatRooms: [],
             currentRoom: [],
-            messages: []
+            messages: [],
+            lastMessage: null
         }
     },
+       // data()  {
+    //     return {  }
+    // },
+    // created() {
+    //     
+    // },
+    // methods: {
+    //     coloring() {
+    //         if(this.user_now.id == this.message.user_id){
+    //         this.isActive = true;
+    //         }
+    //     }
+    // }
     created() {
         this.getRooms();
+        this.request = true;
     },
     watch: {
         currentRoom(val, oldVal) {
@@ -61,14 +78,20 @@ export default {
         }
     },
     methods: {
+        // coloring() {
+        //     if(this.user_now.id == this.messages.user_id){
+        //     this.isActive = true;
+        //     }
+        // },
         connect() {
             if(this.currentRoom.id) {
                 let vm = this;
-                this.getMessage();  
                 window.Echo.private("chat." + this.currentRoom.id)
                 .listen('.message.new', () =>{  
-                    vm.getMessage();
+                    vm.getLastMessage();
                 });
+                this.getMessage();  
+ 
             }
         },
         disconnect(room) {
@@ -91,6 +114,20 @@ export default {
             axios.get("/chat/room/" + this.currentRoom.id + "/messages")
             .then(res => {
                 this.messages = res.data;
+                // this.coloring();
+                this.request = false;
+            })
+            .catch(err =>{
+                console.log(err);
+            })
+        },
+        getLastMessage() {
+            let newObject = {};
+            axios.get("/chat/room/" + this.currentRoom.id + "/message")
+            .then(res => {
+                this.lastMessage = res.data;
+                var object = res.data;
+                this.messages.unshift(object);
             })
             .catch(err =>{
                 console.log(err);

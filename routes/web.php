@@ -48,3 +48,4 @@ Route::middleware([
 Route::middleware('auth:sanctum')->get('/chat/rooms', [ChatController::class, 'rooms']);
 Route::middleware('auth:sanctum')->get('/chat/room/{roomid}/messages', [ChatController::class, 'messages']);
 Route::middleware('auth:sanctum')->post('/chat/room/{roomid}/messages', [ChatController::class, 'newMessage']);
+Route::middleware('auth:sanctum')->get('/chat/room/{roomid}/message', [ChatController::class, 'getLastMessage']);

@@ -10,7 +10,7 @@ module.exports = {
         './resources/js/**/*.vue',
     ],
 
-    theme: {
+    theme: {    
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
@@ -18,5 +18,5 @@ module.exports = {
         },
     },
 
-    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography'), require("tailwindcss-scrollbar"),],
 };

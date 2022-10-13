@@ -23,6 +23,14 @@ class ChatController extends Controller
         ->get();
     }
 
+    public function getLastMessage($roomId)
+    {
+        return ChatMessage::where('chat_room_id', $roomId)
+        ->with('user')
+        ->orderBy('created_at', 'DESC')
+        ->first();  
+    }
+
     public function newMessage(Request $req, $roomId)
     {
         $newMessage = new ChatMessage;
